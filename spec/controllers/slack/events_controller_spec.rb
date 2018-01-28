@@ -3,9 +3,12 @@ require 'rails_helper'
 describe Slack::EventsController do
   before(:all) do
     Rails.application.secrets.slack_app_token = SecureRandom.hex
+    Rails.application.secrets.slack_bot_access_token = SecureRandom.hex
   end
 
   let(:slack_app_token) { Rails.application.secrets.slack_app_token }
+  let(:slack_bot_access_token) { Rails.application.secrets.slack_bot_access_token }
+
   describe '#receive' do
     context 'base parameter validation' do
       it 'responds with 400 when no token' do
@@ -34,9 +37,40 @@ describe Slack::EventsController do
     end
 
     context 'event_callback' do
-      it 'responds with success' do
+      it 'responds with success when type is not of interest' do
+        expect(Slack::CalculateAndSendJob).to_not receive(:perform_async)
         post :receive, params: { type: 'event_callback', token: slack_app_token, event: { type: nil } }
         expect(response).to be_success
+      end
+
+      context "type is 'message'" do
+        it 'responds with success & enqueues CalculateAndSendJob' do
+          event = { 'type' => 'message' }
+          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event, slack_bot_access_token)
+          post :receive, params: { type: 'event_callback', token: slack_app_token, event: event }
+          expect(response).to be_success
+        end
+
+        it "responds with success & doesn't enqueue CalculateAndSendJob when subtype is 'bot_message'" do
+          expect(Slack::CalculateAndSendJob).to_not receive(:perform_async)
+          post :receive, params: { type: 'event_callback', token: slack_app_token, event: { type: 'message', subtype: 'bot_message' } }
+          expect(response).to be_success
+        end
+      end
+
+      context "type is 'app_mention'" do
+        it 'responds with success & enqueues CalculateAndSendJob' do
+          event = { 'type' => 'app_mention' }
+          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event, slack_bot_access_token)
+          post :receive, params: { type: 'event_callback', token: slack_app_token, event: event }
+          expect(response).to be_success
+        end
+
+        it "responds with success & doesn't enqueue CalculateAndSendJob when subtype is 'bot_message'" do
+          expect(Slack::CalculateAndSendJob).to_not receive(:perform_async)
+          post :receive, params: { type: 'event_callback', token: slack_app_token, event: { type: 'app_mention', subtype: 'bot_message' } }
+          expect(response).to be_success
+        end
       end
     end
   end

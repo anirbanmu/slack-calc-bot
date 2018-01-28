@@ -1,4 +1,4 @@
-require "slack/web_api"
+require 'slack/web_api'
 
 describe Slack::WebAPI do
   describe '.post_message' do
