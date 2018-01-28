@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   namespace :slack do
-    post 'events/new'
+    post 'events/receive'
   end
 
   root :to => "application#no_content"

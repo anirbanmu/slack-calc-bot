@@ -1,7 +1,7 @@
 class Slack::EventsController < ApplicationController
   before_action :validate_params
 
-  def new
+  def receive
     case params[:type]
     when 'url_verification'
       handle_url_verification params[:challenge]

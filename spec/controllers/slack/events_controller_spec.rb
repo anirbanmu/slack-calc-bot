@@ -6,20 +6,20 @@ describe Slack::EventsController do
   end
 
   let(:slack_app_token) { Rails.application.secrets.slack_app_token }
-  describe '#new' do
+  describe '#receive' do
     context 'base parameter validation' do
       it 'responds with 400 when no token' do
-        post :new
+        post :receive
         expect(response.code).to eq('400')
       end
 
       it 'responds with 400 when token is invalid' do
-        post :new, params: { token: slack_app_token + '1' }
+        post :receive, params: { token: slack_app_token + '1' }
         expect(response.code).to eq('400')
       end
 
       it 'responds with success when token is valid' do
-        post :new, params: { token: slack_app_token }
+        post :receive, params: { token: slack_app_token }
         expect(response).to be_success
       end
     end
@@ -27,7 +27,7 @@ describe Slack::EventsController do
     context 'url_verification' do
       it 'responds with given challenge' do
         challenge = SecureRandom.hex
-        post :new, params: { type: 'url_verification', challenge: challenge, token: slack_app_token }
+        post :receive, params: { type: 'url_verification', challenge: challenge, token: slack_app_token }
         expect(response).to be_success
         expect(json_body).to eq({ 'challenge' => challenge })
       end
@@ -35,7 +35,7 @@ describe Slack::EventsController do
 
     context 'event_callback' do
       it 'responds with success' do
-        post :new, params: { type: 'event_callback', token: slack_app_token }
+        post :receive, params: { type: 'event_callback', token: slack_app_token }
         expect(response).to be_success
       end
     end
