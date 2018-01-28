@@ -16,8 +16,9 @@ module Slack::WebAPI
     end
 
     Rails.logger.info "  chat.postMessage returned #{response.code} with body #{response.body}"
+    Rails.logger.info "Slack::WebAPI::post_message completed\n"
 
-    response.code
+    response
   end
 
   private

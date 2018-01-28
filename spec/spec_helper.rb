@@ -14,6 +14,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+require 'sucker_punch/testing/inline'
 require 'webmock/rspec'
 WebMock.disable_net_connect!
 

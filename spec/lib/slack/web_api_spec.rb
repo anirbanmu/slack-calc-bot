@@ -1,4 +1,4 @@
-require "slack/web_api"
+require 'slack/web_api'
 
 describe Slack::WebAPI do
   describe '.post_message' do
@@ -11,7 +11,7 @@ describe Slack::WebAPI do
              headers: { 'Authorization': "Bearer #{slack_bot_access_token}", 'Content-Type': 'application/json; charset=utf-8', 'Host': 'slack.com' } ).
         to_return(status: 200, body: "", headers: {})
 
-      expect(Slack::WebAPI::post_message(slack_bot_access_token, channel, message)).to eq('200')
+      expect(Slack::WebAPI::post_message(slack_bot_access_token, channel, message).code).to eq('200')
     end
   end
 end

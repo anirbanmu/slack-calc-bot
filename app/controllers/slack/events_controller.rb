@@ -22,6 +22,11 @@ class Slack::EventsController < ApplicationController
   end
 
   def handle_event_callback(event)
+    case event[:type]
+    when 'message', 'app_mention'
+      Slack::CalculateAndSendJob.perform_async(event, Rails.application.secrets.slack_bot_access_token) if event[:subtype] != 'bot_message'
+    end
+
     head :ok
   end
 end
