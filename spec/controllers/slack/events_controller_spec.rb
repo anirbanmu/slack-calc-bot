@@ -35,7 +35,7 @@ describe Slack::EventsController do
 
     context 'event_callback' do
       it 'responds with success' do
-        post :receive, params: { type: 'event_callback', token: slack_app_token }
+        post :receive, params: { type: 'event_callback', token: slack_app_token, event: { type: nil } }
         expect(response).to be_success
       end
     end
