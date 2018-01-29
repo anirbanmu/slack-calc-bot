@@ -1,5 +1,5 @@
 # slack-calc-bot
-Bot for Slack that evaluates arithmetic expressions. Supports addition, subtraction, multiplication, division, exponentiation (use exponentiation for square roots & other roots) & parenthesis.
+Bot for Slack that evaluates arithmetic expressions. Supports addition (`+`), subtraction (`-`), multiplication (`*`, `×`), division (`\`, `÷`), exponentiation (`^`) (use exponentiation for square roots & other roots) & parenthesis (`(`, `)`).
 
 ## Setup
 ### On Slack side
