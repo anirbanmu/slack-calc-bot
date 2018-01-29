@@ -9,7 +9,7 @@ class InfixEvaluator
                               '^' => :right }
   OPERATOR_RUBY_SYMBOL = { '+' => :+, '-' => :-,
                            '*' => :*, '×' => :*,
-                           '/' => :/, '÷' => '/',
+                           '/' => :/, '÷' => :/,
                            '^' => :** }
 
   attr_accessor :result
