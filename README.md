@@ -15,8 +15,8 @@ Bot for Slack that evaluates arithmetic expressions
 - If you'd like to use Heroku to run the bot, skip the next 3 steps and jump down to 'Heroku Setup'
 - From the repo directory, run `bundle install`
 - Set two environment variables as follows from the Slack information we noted down earlier:
-  - SLACK_APP_TOKEN=<Verification Token noted down from the 'Basic Information' page on Slack>
-  - SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Access Token noted down from the 'Installed App Settings' page on Slack>
+   - SLACK_APP_TOKEN=<Verification Token noted down from the 'Basic Information' page on Slack>
+   - SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Access Token noted down from the 'Installed App Settings' page on Slack>
 - Run the Rails application via `rails server`
 
 ### Heroku setup
@@ -33,8 +33,8 @@ Bot for Slack that evaluates arithmetic expressions
 - For 'Request URL' enter the URL/IP of the machine you're hosting the bot on followed by `slack/events/receive` (should be of the form `https://my.sub.domain.com/slack/events/receive`)
 - As long as you did the previous block properly on your machine/server, the verification should be successful.
 - Scroll down to 'Subscribe to Bot Events' & subscribe to these two events:
- - `app_mention`
- - `message.im`
+  - `app_mention`
+  - `message.im`
 - Save changes.
 
 You're all set to start messaging the app/bot. Invite the bot to your channel & highlight it with arithmetic expressions. Direct messages to the application also work.
