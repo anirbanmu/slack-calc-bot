@@ -41,3 +41,10 @@ You're all set to start messaging the app/bot. Invite the bot to your channel & 
 
 ## Tests
 This assumes you've completed the `On your machine/server` section above. To execute tests run `bundle exec rspec`.
+
+## Main source code locations
+- Slack::EventsController - implements endpoint for Events API [`app/controllers/slack`](https://github.com/anirbanmu/slack-calc-bot/tree/master/app/controllers/slack)
+- Slack::WebAPI - Wrapper to call Slack WebAPI [`lib/slack`](https://github.com/anirbanmu/slack-calc-bot/tree/master/lib/slack)
+- InfixEvaluator - Class to parse and evaluate infix arithmetic [`lib`](https://github.com/anirbanmu/slack-calc-bot/tree/master/lib)
+- Slack::CalculateAndSendJob - Async job to do infix evaluation & sending of slack message [`app/jobs/slack`](https://github.com/anirbanmu/slack-calc-bot/tree/master/app/jobs/slack)
+- Test specs - RSpec tests [`spec`](https://github.com/anirbanmu/slack-calc-bot/tree/master/spec)
