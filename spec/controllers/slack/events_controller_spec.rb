@@ -45,8 +45,8 @@ describe Slack::EventsController do
 
       context "type is 'message'" do
         it 'responds with success & enqueues CalculateAndSendJob' do
-          event = { 'type' => 'message' }
-          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event, slack_bot_access_token)
+          event = { 'type' => 'message', 'text' => Faker::Lorem.word, 'user' => Faker::Lorem.word, 'channel' => Faker::Lorem.word }
+          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event['text'], event['user'], event['channel'], slack_bot_access_token)
           post :receive, params: { type: 'event_callback', token: slack_app_token, event: event }
           expect(response).to be_success
         end
@@ -60,8 +60,8 @@ describe Slack::EventsController do
 
       context "type is 'app_mention'" do
         it 'responds with success & enqueues CalculateAndSendJob' do
-          event = { 'type' => 'app_mention' }
-          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event, slack_bot_access_token)
+          event = { 'type' => 'app_mention', 'text' => Faker::Lorem.word, 'user' => Faker::Lorem.word, 'channel' => Faker::Lorem.word }
+          expect(Slack::CalculateAndSendJob).to receive(:perform_async).with(event['text'], event['user'], event['channel'], slack_bot_access_token)
           post :receive, params: { type: 'event_callback', token: slack_app_token, event: event }
           expect(response).to be_success
         end
