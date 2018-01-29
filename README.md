@@ -17,7 +17,7 @@ Bot for Slack that evaluates arithmetic expressions
 - Set two environment variables as follows from the Slack information we noted down earlier:
    - SLACK_APP_TOKEN=<Verification Token noted down from the 'Basic Information' page on Slack>
    - SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Access Token noted down from the 'Installed App Settings' page on Slack>
-- Run the Rails application via `rails server`
+- Run the Rails application via `bundle exec rails server`
 
 ### Heroku setup
 - This assumes you have the heroku toolbelt installed on your machine & are set up with credentials for Heroku. Check here if you need to set it up - [Heroku](https://devcenter.heroku.com/articles/heroku-cli).
@@ -30,7 +30,7 @@ Bot for Slack that evaluates arithmetic expressions
 ### Back on Slack
 - Navigate to the 'Event Subscriptions' page for your app (should be of form `https://api.slack.com/apps/<some-app-id>/event-subscriptions?`)
 - Enable events
-- For 'Request URL' enter the URL/IP of the machine you're hosting the bot on followed by `slack/events/receive` (should be of the form `https://my.sub.domain.com/slack/events/receive`)
+- For 'Request URL' enter the URL/IP of the machine you're hosting the bot on followed by `slack/events/receive` (should be of the form `https://my.sub.domain.com/slack/events/receive`). If you're running the bot on your own machine via `rails server` the default port for the server is `3000` so you'd have to specify this in the `Request URL` like `http://21.43.47.244:3000/slack/events/receive`.
 - As long as you did the previous block properly on your machine/server, the verification should be successful.
 - Scroll down to 'Subscribe to Bot Events' & subscribe to these two events:
   - `app_mention`
