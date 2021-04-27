@@ -1,42 +1,48 @@
-class Slack::EventsController < ApplicationController
-  before_action :validate_params
+# frozen_string_literal: true
 
-  def receive
-    case params[:type]
-    when 'url_verification'
-      handle_url_verification params[:challenge]
-    when 'event_callback'
-      handle_event_callback params[:event]
-    end
-  end
+module Slack
+  # Deals with all events from Slack
+  class EventsController < ApplicationController
+    before_action :validate_params
 
-  private
-
-  # Trust call if app token is valid
-  def validate_params
-    head :bad_request if params[:token] != Rails.application.secrets.slack_app_token
-  end
-
-  def handle_url_verification(challenge)
-    render json: { challenge: challenge }
-  end
-
-  def handle_event_callback(event)
-    case event[:type]
-    when 'message', 'app_mention'
-      if event[:subtype] != 'bot_message'
-        Slack::CalculateAndSendJob.perform_async(message_text(event), message_user(event), event[:channel], Rails.application.secrets.slack_bot_access_token)
+    def receive
+      case params[:type]
+      when 'url_verification'
+        handle_url_verification params[:challenge]
+      when 'event_callback'
+        handle_event_callback params[:event]
       end
     end
 
-    head :ok
-  end
+    private
 
-  def message_user(event)
-    event[:user] ? event[:user] : event[:message][:user]
-  end
+    # Trust call if app token is valid
+    def validate_params
+      head :bad_request if params[:token] != Rails.application.secrets.slack_app_token
+    end
 
-  def message_text(event)
-    event[:text] ? event[:text] : event[:message][:text]
+    def handle_url_verification(challenge)
+      render json: { challenge: challenge }
+    end
+
+    def handle_event_callback(event)
+      case event[:type]
+      when 'message', 'app_mention'
+        if event[:subtype] != 'bot_message'
+          Slack::CalculateAndSendJob.perform_async(message_text(event), message_user(event), event[:channel],
+                                                   Rails.application.secrets.slack_bot_access_token)
+        end
+      end
+
+      head :ok
+    end
+
+    def message_user(event)
+      event[:user] || event[:message][:user]
+    end
+
+    def message_text(event)
+      event[:text] || event[:message][:text]
+    end
   end
 end
