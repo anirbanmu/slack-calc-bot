@@ -10,7 +10,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'bootsnap', '~> 1.7'
-gem 'puma', '~> 5.2' # server
+gem 'puma', '~> 5.6' # server
 gem 'rails', '~> 6.1'
 
 # Use ActiveModel has_secure_password
