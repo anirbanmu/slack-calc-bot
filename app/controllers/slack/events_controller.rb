@@ -3,7 +3,7 @@
 module Slack
   # Deals with all events from Slack
   class EventsController < ApplicationController
-    before_action :validate_params
+    before_action :validate_request
 
     def receive
       case params[:type]
@@ -16,9 +16,15 @@ module Slack
 
     private
 
-    # Trust call if app token is valid
-    def validate_params
-      head :bad_request if params[:token] != Rails.application.secrets.slack_app_token
+    # Validate that this request is from Slack
+    def validate_request
+      hashed = OpenSSL::HMAC.hexdigest(
+        OpenSSL::Digest.new('sha256'),
+        Rails.application.secrets.slack_signing_secret,
+        "v0:#{request.headers['X-Slack-Request-Timestamp']}:#{request.body.read}"
+      )
+      calculated_signature = "v0=#{hashed}"
+      head :bad_request unless request.headers['X-Slack-Signature'] == calculated_signature
     end
 
     def handle_url_verification(challenge)
@@ -28,7 +34,8 @@ module Slack
     def handle_event_callback(event)
       case event[:type]
       when 'message', 'app_mention'
-        if event[:subtype] != 'bot_message'
+        # Only post if it's not a bot message (AKA from us)
+        if event[:app_id].nil? && event[:bot_profile].nil?
           Slack::CalculateAndSendJob.perform_async(message_text(event), message_user(event), event[:channel],
                                                    Rails.application.secrets.slack_bot_access_token)
         end
