@@ -13,9 +13,6 @@ gem 'bootsnap', '~> 1.7'
 gem 'puma', '~> 5.2' # server
 gem 'rails', '~> 6.1'
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
 # Async in-memory job runner
 gem 'sucker_punch', '~> 3.0'
 
