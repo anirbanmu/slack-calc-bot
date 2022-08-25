@@ -9,9 +9,9 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'bootsnap', '~> 1.7'
-gem 'puma', '~> 5.2' # server
-gem 'rails', '~> 6.1'
+gem 'bootsnap', '~> 1.13'
+gem 'puma', '~> 5.6' # server
+gem 'rails', '~> 7.0'
 
 # Async in-memory job runner
 gem 'sucker_punch', '~> 3.0'
@@ -23,13 +23,10 @@ end
 
 group :development do
   gem 'listen'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'rubocop', '~> 1.13', require: false
+  gem 'rubocop', '~> 1.35', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem 'spring'
-  gem 'spring-watcher-listen'
 end
 
 group :test do
