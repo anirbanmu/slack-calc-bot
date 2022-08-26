@@ -1,0 +1,35 @@
+.git
+tmp
+!tmp/pids
+log
+public/assets
+public/packs
+.bundle
+
+db/*.sqlite3
+db/*.sqlite3-*
+
+storage
+config/master.key
+config/credentials/*.key
+
+node_modules
+
+# These should never go anywhere but local developer machine
+.env.*
+
+# We don't need these for running the rails app
+.dockerignore
+public
+spec
+vendor
+.gitgnore
+.rspec
+.rubocop.yml
+.ruby-gemset
+.ruby-version
+Dockerfile
+fly.toml
+Procfile
+README.md
+slack-manifest.yml
