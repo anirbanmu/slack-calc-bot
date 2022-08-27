@@ -2,30 +2,40 @@
 Bot for Slack that evaluates arithmetic expressions. Supports addition (`+`), subtraction (`-`), multiplication (`*`, `×`), division (`\`, `÷`), exponentiation (`^`) (use exponentiation for square roots & other roots) & parenthesis (`(`, `)`).
 
 ## Setup
-### On Slack side
-- Create a new application at https://api.slack.com/apps using the template manifest @ [slack-manifest.yml](slack-manifest.yml) filling in the following details:
-  - `<URL-TO-YOUR-APP>`: can be either ngrok URL for development or wherever you're hosting the app (.e.g Heroku)
-- Note down the 'Signing Secret' given on the 'Basic Information' page for the application (should be of form `https://api.slack.com/apps/<some-app-id>/general?`)
-- Install application to your workspace & note down the `Bot User OAuth Token` on the 'Install App' page for the app (should be of form `https://api.slack.com/apps/<some-app-id>/install-on-team?`)
+These steps jump between local machine, Slack side & fly.io a lot, so please bear with me.
 
-### On your machine/server
+### On your machine
 - Install Ruby.
 - Install Bundler - `gem install bundler`
 - Clone this repo
-- If you'd like to use Heroku to run the bot, skip the next 3 steps and jump down to 'Heroku Setup'
+- (Optional) If you'd like to host the bot on [fly.io](https://fly.io/)
+  - Install `flyctl` (instructions [here](https://fly.io/docs/getting-started/installing-flyctl/)).
+  - Auth `flyctl`
+  - From the repo directory, run `flyctl apps create` & choose options as prompted.
+  - Note down the the app name you chose here, referred to as `<FLY-IO-APP-NAME>`.
+  - Fill in this name `<FLY-IO-APP-NAME>` in [fly.toml](fly.toml) where it says `<FLY-IO-APP-NAME>`.
+  - Go to `https://fly.io/apps/<FLY-IO-APP-NAME>` & note down it's hostname, will be referred to as `<FLY-IO-APP-URL>`.
+
+### On Slack side
+- Create a new application at https://api.slack.com/apps using the template manifest @ [slack-manifest.yml](slack-manifest.yml) filling in the following details:
+  - `<URL-TO-YOUR-APP>`: can be either ngrok URL for development or `<FLY-IO-APP-URL>` if you're hosting on fly.io.
+- Note down the 'Signing Secret' given on the 'Basic Information' page for the application (should be of form `https://api.slack.com/apps/<some-app-id>/general?`)
+- Install application to your workspace & note down the `Bot User OAuth Token` on the 'Install App' page for the app (should be of form `https://api.slack.com/apps/<some-app-id>/install-on-team?`)
+
+### Back on your machine (for local development)
 - From the repo directory, run `bundle install`
 - Set two environment variables as follows from the Slack information we noted down earlier:
    - SLACK_SIGNING_SECRET=<Signing Secret noted down from the 'Basic Information' page on Slack>
    - SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Token noted down from the 'Install App' page on Slack>
 - Run the Rails application via `bundle exec rails server`
 
-### Heroku setup
-- This assumes you have the heroku toolbelt installed on your machine & are set up with credentials for Heroku. Check here if you need to set it up - [Heroku](https://devcenter.heroku.com/articles/heroku-cli).
-- From the repo directory, run `heroku create`
-- Run `heroku config:set SLACK_SIGNING_SECRET=<Signing Secret noted down from the 'Basic Information' page on Slack>`
-- Run `heroku config:set SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Token noted down from the 'Install App' page on Slack>`
-- Push the repo to Heroku via `git push heroku master`
-- You should see that Heroku successfully deploys your bot
+### Back on your machine (for fly.io deployment)
+- Run `flyctl secrets set SLACK_SIGNING_SECRET=<Signing Secret noted down from the 'Basic Information' page on Slack>`
+- Run `flyctl secrets set SLACK_BOT_ACCESS_TOKEN=<Bot User OAuth Token noted down from the 'Install App' page on Slack>`
+- Run `bundle exec rails secret` & copy the value that's printed.
+- Run `flyctl secrets set SECRET_KEY_BASE=<value copied in last step>`
+- Run `flyctl deploy` to deploy
+- You should see that fly.io successfully deploys your bot
 
 ### Back on Slack
 - Navigate to the 'App Manfiest' page for your app (should be of form `https://app.slack.com/app-settings/<some-id>/<some-id>/app-manifest`)
@@ -34,7 +44,7 @@ Bot for Slack that evaluates arithmetic expressions. Supports addition (`+`), su
 You're all set to start messaging the app/bot. Invite the bot to your channel & highlight it with arithmetic expressions. Direct messages to the application also work.
 
 ## Tests
-This assumes you've completed the `On your machine/server` section above. To execute tests run `bundle exec rspec`.
+This assumes you've completed the `On your machine` & `Back on your machine (for local development)` section above. To execute tests run `bundle exec rspec`.
 
 ## Main source code locations
 - Slack::EventsController - implements endpoint for Events API [`app/controllers/slack`](https://github.com/anirbanmu/slack-calc-bot/tree/master/app/controllers/slack)
