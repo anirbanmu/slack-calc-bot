@@ -22,9 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
-      - name: Install Gemfile.lock matched bundler
-        run: gem install bundler -v $(tail -n1 Gemfile.lock | tr -d ' ')
-      - name: Install gems
-        run: bundle install
+        with:
+          bundler-cache: true
       - name: Run tests
         run: bundle exec rspec
