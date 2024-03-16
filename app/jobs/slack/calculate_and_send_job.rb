@@ -17,7 +17,7 @@ module Slack
         message += ' I could not understand the arithmetic expression'
       end
 
-      response = Slack::WebAPI.post_message(bot_token, channel, message)
+      response = Slack::WebApi.post_message(bot_token, channel, message)
       logger.warn "Slack::CalculateAndSendJob failed to send message with #{response.code} & body #{response.body}" if response.code != '200'
     end
   end
