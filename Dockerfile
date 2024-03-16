@@ -1,4 +1,4 @@
-FROM docker.io/library/ruby:3.3.0-alpine
+FROM docker.io/library/ruby:3.2.3-alpine
 LABEL Author="Anirban Mukhopadhyay"
 
 RUN apk update && apk upgrade && apk add tzdata
