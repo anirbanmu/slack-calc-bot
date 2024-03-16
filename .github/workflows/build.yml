@@ -1,0 +1,30 @@
+name: Build verification
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  container-image-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          push: false
+
+  rspec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+      - name: Install Gemfile.lock matched bundler
+        run: gem install bundler -v $(tail -n1 Gemfile.lock | tr -d ' ')
+      - name: Install gems
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rspec
