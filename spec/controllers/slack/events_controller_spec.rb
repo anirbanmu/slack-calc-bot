@@ -3,13 +3,8 @@
 require 'rails_helper'
 
 describe Slack::EventsController do
-  before(:all) do # rubocop:disable RSpec/BeforeAfterAll
-    Rails.application.credentials.slack_signing_secret = SecureRandom.hex
-    Rails.application.credentials.slack_bot_access_token = SecureRandom.hex
-  end
-
-  let(:slack_signing_secret) { Rails.application.credentials.slack_signing_secret }
-  let(:slack_bot_access_token) { Rails.application.credentials.slack_bot_access_token }
+  let(:slack_signing_secret) { Rails.application.credentials.slack.signing_secret }
+  let(:slack_bot_access_token) { Rails.application.credentials.slack.bot_access_token }
 
   let(:timestamp) { Time.now.to_i.to_s }
 

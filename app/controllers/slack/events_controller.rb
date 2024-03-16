@@ -20,7 +20,7 @@ module Slack
     def validate_request
       hashed = OpenSSL::HMAC.hexdigest(
         OpenSSL::Digest.new('sha256'),
-        Rails.application.credentials.slack_signing_secret,
+        Rails.application.credentials.slack.signing_secret,
         "v0:#{request.headers['X-Slack-Request-Timestamp']}:#{request.body.read}"
       )
       calculated_signature = "v0=#{hashed}"
@@ -37,7 +37,7 @@ module Slack
         # Only post if it's not a bot message (AKA from us)
         if event[:app_id].nil? && event[:bot_profile].nil?
           Slack::CalculateAndSendJob.perform_async(message_text(event), message_user(event), event[:channel],
-                                                   Rails.application.credentials.slack_bot_access_token)
+                                                   Rails.application.credentials.slack.bot_access_token)
         end
       end
 

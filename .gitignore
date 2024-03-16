@@ -18,3 +18,7 @@
 .env.*
 
 /config/master.key
+
+/config/credentials/production.key
+
+/config/credentials/test.key
