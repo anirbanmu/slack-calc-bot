@@ -2,13 +2,8 @@
 
 set -e
 
-if [ -z "${SLACK_SIGNING_SECRET}" ]; then
-    echo "SLACK_SIGNING_SECRET must be set"
-    exit 1
-fi
-
-if [ -z "${SLACK_BOT_ACCESS_TOKEN}" ]; then
-    echo "SLACK_BOT_ACCESS_TOKEN must be set"
+if [ -z "${RAILS_MASTER_KEY}" ]; then
+    echo "RAILS_MASTER_KEY must be set"
     exit 1
 fi
 
