@@ -2,7 +2,7 @@
 
 require 'slack/web_api'
 
-describe Slack::WebAPI do
+describe Slack::WebApi do
   describe '.post_message' do
     let(:slack_bot_access_token) { SecureRandom.hex }
     let(:channel) { SecureRandom.hex }

@@ -4,12 +4,12 @@ require 'rails_helper'
 
 describe Slack::EventsController do
   before(:all) do # rubocop:disable RSpec/BeforeAfterAll
-    Rails.application.secrets.slack_signing_secret = SecureRandom.hex
-    Rails.application.secrets.slack_bot_access_token = SecureRandom.hex
+    Rails.application.credentials.slack_signing_secret = SecureRandom.hex
+    Rails.application.credentials.slack_bot_access_token = SecureRandom.hex
   end
 
-  let(:slack_signing_secret) { Rails.application.secrets.slack_signing_secret }
-  let(:slack_bot_access_token) { Rails.application.secrets.slack_bot_access_token }
+  let(:slack_signing_secret) { Rails.application.credentials.slack_signing_secret }
+  let(:slack_bot_access_token) { Rails.application.credentials.slack_bot_access_token }
 
   let(:timestamp) { Time.now.to_i.to_s }
 
@@ -28,14 +28,14 @@ describe Slack::EventsController do
     context 'base signature validation' do
       it 'responds with 400 when no signature' do
         post :receive
-        expect(response.code).to eq('400')
+        expect(response).to have_http_status(:bad_request)
       end
 
       it 'responds with 400 when signature is invalid' do
         request.headers['X-Slack-Request-Timestamp'] = timestamp
         request.headers['X-Slack-Signature'] = 'invalid'
         post :receive
-        expect(response.code).to eq('400')
+        expect(response).to have_http_status(:bad_request)
       end
 
       it 'responds with success when signature is valid' do
@@ -48,9 +48,9 @@ describe Slack::EventsController do
     context 'url_verification' do
       it 'responds with given challenge' do
         challenge = SecureRandom.hex
-        body = { type: 'url_verification', challenge: challenge }.to_json
+        body = { type: 'url_verification', challenge: }.to_json
         calculate_and_set_valid_headers(body)
-        post :receive, body: body, as: :json
+        post :receive, body:, as: :json
 
         expect(response).to be_successful
         expect(json_body).to eq({ 'challenge' => challenge })
@@ -65,7 +65,7 @@ describe Slack::EventsController do
 
         body = { type: 'event_callback', event: { type: 'something' } }.to_json
         calculate_and_set_valid_headers(body)
-        post :receive, body: body, as: :json
+        post :receive, body:, as: :json
 
         expect(response).to be_successful
         expect(Slack::CalculateAndSendJob).not_to have_received(:perform_async)
@@ -77,9 +77,9 @@ describe Slack::EventsController do
 
           event = { 'type' => 'message', 'text' => Faker::Lorem.word, 'user' => Faker::Lorem.word,
                     'channel' => Faker::Lorem.word }
-          body = { type: 'event_callback', event: event }.to_json
+          body = { type: 'event_callback', event: }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).to have_received(:perform_async).with(
@@ -95,7 +95,7 @@ describe Slack::EventsController do
 
           body = { type: 'event_callback', event: { type: 'message', app_id: 'app_id' } }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).not_to have_received(:perform_async)
@@ -106,7 +106,7 @@ describe Slack::EventsController do
 
           body = { type: 'event_callback', event: { type: 'message', bot_profile: {} } }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).not_to have_received(:perform_async)
@@ -119,9 +119,9 @@ describe Slack::EventsController do
 
           event = { 'type' => 'app_mention', 'text' => Faker::Lorem.word, 'user' => Faker::Lorem.word,
                     'channel' => Faker::Lorem.word }
-          body = { type: 'event_callback', event: event }.to_json
+          body = { type: 'event_callback', event: }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).to have_received(:perform_async).with(
@@ -137,7 +137,7 @@ describe Slack::EventsController do
 
           body = { type: 'event_callback', event: { type: 'app_mention', app_id: 'app_id' } }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).not_to have_received(:perform_async)
@@ -148,7 +148,7 @@ describe Slack::EventsController do
 
           body = { type: 'event_callback', event: { type: 'app_mention', bot_profile: {} } }.to_json
           calculate_and_set_valid_headers(body)
-          post :receive, body: body, as: :json
+          post :receive, body:, as: :json
 
           expect(response).to be_successful
           expect(Slack::CalculateAndSendJob).not_to have_received(:perform_async)
@@ -160,6 +160,6 @@ describe Slack::EventsController do
   private
 
   def json_body
-    JSON.parse(response.body)
+    response.parsed_body
   end
 end

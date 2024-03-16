@@ -9,12 +9,12 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'bootsnap', '~> 1.13'
-gem 'puma', '~> 5.6' # server
-gem 'rails', '~> 7.0'
+gem 'bootsnap', '~> 1.18'
+gem 'puma', '~> 6.4' # server
+gem 'rails', '~> 7.1'
 
 # Async in-memory job runner
-gem 'sucker_punch', '~> 3.0'
+gem 'sucker_punch', '~> 3.2'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -23,7 +23,7 @@ end
 
 group :development do
   gem 'listen'
-  gem 'rubocop', '~> 1.35', require: false
+  gem 'rubocop', '~> 1.62', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
